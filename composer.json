@@ -1,0 +1,25 @@
+{
+    "name": "ulan/sms",
+    "description": "sms",
+    "license": "MIT",
+    "version": "dev-master",
+    "keywords": ["sms", "laravel sms", "laravel-sms"],
+    "authors": [
+        {
+            "name": "bitqiu",
+            "email": "qiuyongling@live.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ],
+        "psr-4": {
+            "ULan\\Sms\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
