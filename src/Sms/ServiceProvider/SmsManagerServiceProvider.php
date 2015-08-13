@@ -1,5 +1,5 @@
 <?php
-namespace ULan\Sms;
+namespace ULan\Sms\ServiceProvider;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -12,19 +12,19 @@ class SmsManagerServiceProvider extends ServiceProvider
     {
         //publish a config file
         $this->publishes([
-            __DIR__ . '/../config/config.php' => config_path('sms.php')
+            __DIR__ . '/../../config/config.php' => config_path('sms.php')
         ], 'config');
 
         //publish migrations
         $this->publishes([
-            __DIR__ . '/../migrations/' => database_path('/migrations')
+            __DIR__ . '/../../migrations/' => database_path('/migrations')
         ], 'migrations');
 
         //route file
-        require __DIR__ . '/routes.php';
+        require __DIR__ . '/../routes.php';
 
         //validations file
-        require __DIR__ . '/validations.php';
+        require __DIR__ . '/../validations.php';
     }
 
     /**
@@ -34,7 +34,7 @@ class SmsManagerServiceProvider extends ServiceProvider
     {
         // Merge configs
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/config.php', 'sms'
+            __DIR__ . '/../../config/config.php', 'sms'
         );
 
         $this->app->singleton('SmsManager', function(){

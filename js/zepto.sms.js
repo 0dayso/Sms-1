@@ -1,20 +1,3 @@
-/*
- * send verify sms
- *---------------------------
- * top lan <toplan710@gmail.com>
- * https://github.com/toplan/laravel-sms
- * --------------------------
- * Date 2015/06/08
- *
- * example usage:
- *   $('#sendVerifySmsButton').sms({
- *       token          : "{{csrf_token}}",
- *       mobileSelector : 'input[name="mobile"]',
- *       alertMsg       : function (msg) {
- *           alert(msg);
- *        }
- *   });
- */
 (function($){
 
     $.fn.sms = function(options){

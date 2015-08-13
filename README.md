@@ -1,21 +1,21 @@
-# laravel-sms for laravel 5
+# sms for laravel 5
 
 **使用场景**
 
 1. 发送短信验证码。
 2. 发送信息通知短信(如：订单通知，发货通知，上课通知...)。
-3. 特殊情况下用户收不到短信？ laravel-sms提倡通过备用代理器机制使用两个及两个以上服务商。
+3. 特殊情况下用户收不到短信？ sms提倡通过备用代理器机制使用两个及两个以上服务商。
 
 **该包特性**
 
 1. 数据库记录/管理短信数据及其发送情况。
 2. 兼容模板短信和内容短信。
-3. [支持短信队列](https://github.com/toplan/laravel-sms#短信队列)。
-4. [备用代理器(服务商)机制](https://github.com/toplan/laravel-sms#备用代理器机制)。即:如果用一个服务商发送短信失败，将会自动尝试通过预先设置的备用服务商发送。
-5. 集成[验证码短信发送/校验模块](https://github.com/toplan/laravel-sms#验证码短信模块)，分分钟搞定验证码短信发送以及手机号/验证码校验，
+3. 支持短信队列。
+4. 备用代理器(服务商)机制。即:如果用一个服务商发送短信失败，将会自动尝试通过预先设置的备用服务商发送。
+5. 集成验证码短信发送/校验模块，分分钟搞定验证码短信发送以及手机号/验证码校验，
    从此告别重复写验证码短信发送与校验的历史。
 6. 支持语音验证码，使用方法见特性5。
-7. 集成如下第三方短信服务商，你也可[自定义代理器](https://github.com/toplan/laravel-sms#自定义代理器)。
+7. 集成如下第三方短信服务商，你也可自定义代理器。
 
 | 服务商 | 模板短信 | 内容短信 | 语音验证码 | 最低消费  |  最低消费单价 |
 | ----- | :-----: | :-----: | :------: | :-------: | :-----: |
@@ -28,7 +28,7 @@
 ##安装
 在项目根目录下运行如下composer命令:
 ```php
-   composer require 'toplan/laravel-sms:dev-master'
+   composer require 'ulan/sms:dev-master'
 ```
 
 ##快速上手
@@ -37,18 +37,12 @@
 
 在config/app.php文件中providers数组里加入：
 ```php
-   //laravel 5.0.*
-   'Toplan\Sms\SmsManagerServiceProvider'
-   //laravel 5.1.*
-   Toplan\Sms\SmsManagerServiceProvider::class
+   ULan\Sms\ServiceProvider\SmsManagerServiceProvider::class
 ```
 
 在config/app.php文件中的aliases数组里加入
 ```php
-   //laravel 5.0.*
-   'SmsManager' => 'Toplan\Sms\Facades\SmsManager'
-   //laravel 5.1.*
-   'SmsManager' => Toplan\Sms\Facades\SmsManager::class
+   'SmsManager' => ULan\Sms\Facades\SmsManager::class
 ```
 
 ####2.migration生成 & 参数配置
@@ -65,7 +59,7 @@
 
    * 设置默认代理器(服务商)
 
-   请在config/laravel-sms.php中设置默认代理服务商，默认为'Luosimao'。
+   请在config/sms.php中设置默认代理服务商，默认为'Luosimao'。
 ```php
    'agent' => 'Luosimao',
 ```
@@ -89,13 +83,13 @@
   在控制器中发送触发短信，如：
 ```php
   //只希望使用模板方式发送短信,可以不设置内容content (如云通讯,Submail)
-  Toplan\Sms\Sms::make($tempId)->to('1828****349')->data(['12345', 5])->send();
+  ULan\Sms\Sms::make($tempId)->to('1828****349')->data(['12345', 5])->send();
 
   //只希望使用内容方式放送,可以不设置模板id和模板数据data (如云片,luosimao)
-  Toplan\Sms\Sms::make()->to('1828****349')->content('【Laravel SMS】亲爱的张三，欢迎访问，祝你工作愉快。')->send();
+  ULan\Sms\Sms::make()->to('1828****349')->content('【Laravel SMS】亲爱的张三，欢迎访问，祝你工作愉快。')->send();
 
   //同时确保能通过模板和内容方式发送。这样做的好处是，可以兼顾到各种代理器(服务商)！
-  Toplan\Sms\Sms::make([
+  ULan\Sms\Sms::make([
       'YunTongXun' => '123',
       'SubMail'    => '123'
   ])
@@ -118,7 +112,7 @@
 如果你只使用了默认代理器，即没有开启备用代理器机制。你只需要设置默认代理器的模板ID:
 ```php
    //静态方法设置，并返回sms实例
-   $sms = Toplan\Sms\Sms::make('20001');
+   $sms = ULan\Sms\Sms::make('20001');
    //或
    $sms = $sms->template('20001');
 ```
@@ -126,7 +120,7 @@
 如果你要开启备用代理器机制，那么需要为只支持模板短信默认/备用代理器设置相应模板ID，这样才能保证这些代理器正常使用。可以这样设置:
 ```php
    //静态方法设置，并返回sms实例
-   $sms = Toplan\Sms\Sms::make(['YunTongXun' => '20001', 'SubMail' => 'xxx', ...]);
+   $sms = ULan\Sms\Sms::make(['YunTongXun' => '20001', 'SubMail' => 'xxx', ...]);
    //设置指定服务商的模板id
    $sms = $sms->template('YunTongXun', '20001')->template('SubMail' => 'xxx');
    //一次性设置多个服务商的模板id
@@ -161,7 +155,7 @@
 
 ##短信队列
 
-  在config/laravel-sms中修改配置
+  在config/sms中修改配置
 ```php
    //开启队列为true, 关闭队列为false
    'smsSendQueue' => true,
@@ -173,7 +167,7 @@
 
 ##备用代理器机制
   如果用一个服务商发送短信失败(如：欠费、频繁发送、发送次数上限、内容重复...)，将会自动尝试通过备用服务商发送。
-  在config/laravel-sms.php中配置备用代理器
+  在config/sms.php中配置备用代理器
 ```php
   'alternate' => [
       //关闭备用代理器机制为false,打开为true
@@ -195,7 +189,7 @@
 该包已经封装好浏览器端的jquery/zepto插件，只需要为发送按钮添加扩展方法即可实现发送短信。
 ```html
   //js文件在laravel-sms包的js文件夹中，请复制到项目资源目录
-  <script src="/assets/js/jquery(zepto).laravel-sms.js"></script>
+  <script src="/assets/js/jquery(zepto).sms.js"></script>
   <script>
      $('#sendVerifySmsButton').sms({
         //token value
@@ -218,7 +212,7 @@
 
 ####2.[服务器端]配置短信内容/模板
 
-配置文件: config/laravel-sms.php
+配置文件: config/sms.php
 
 * 填写你的验证码短信内容或模板标示符
 
@@ -274,10 +268,10 @@
 
 ####1.自定义Model
 
-   继承model类(Toplan\Sms\Sms)
+   继承model类(ULan\Sms\Models\Sms)
 ```php
   namespace App\Models;
-  class MySmsModel extends Toplan\Sms\Sms {
+  class MySmsModel extends ULan\Sms\Models\Sms {
         //override
         public function send()
         {
@@ -300,7 +294,7 @@
 
 欢迎贡献更多的代理器，这样就能支持更多第三方服务商的发送接口。请注意命名规范，Foo为代理器(服务商)名称。
 
-配置项加入到src/config/laravel-sms.php中：
+配置项加入到src/config/sms.php中：
 
 ```php
    'Foo' => [
@@ -316,7 +310,7 @@
 在agents目录下添加代理器类(注意类名为FooAgent),并继承Agent抽象类。如果使用到其他api，可以将api文件放入src/lib文件夹中。
 
 ```php
-   namespace Toplan\Sms;
+   namespace ULan\Sms;
    class FooAgent extends Agent {
         //override
         //发送短信一级入口

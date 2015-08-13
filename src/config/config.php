@@ -10,7 +10,7 @@ return array(
      * 可选值有:'Luosimao', 'YunTongXun', 'YunPian', 'SubMail', 'Ucpaas'
      */
 
-    'agent' => 'YunPian',
+    'agent' => 'Luosimao',
 
     /*
      *-----------------------------------
