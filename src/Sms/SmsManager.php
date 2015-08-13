@@ -356,7 +356,7 @@ class SmsManager
     {
         if (preg_match('/^(?:create)([0-9a-zA-Z]+)(?:Agent)$/', $name, $matches)) {
             $agentName = $matches[1];
-            $className = 'ULan\\Sms\\' . $agentName . 'Agent';
+            $className = 'ULan\\Sms\\Agents\\' . $agentName . 'Agent';
             if (class_exists($className)) {
                 if (isset($args[0]) && is_array($args[0])) {
                     return new $className($args[0]);

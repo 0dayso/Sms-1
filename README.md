@@ -1,4 +1,4 @@
-# sms for laravel 5
+# sms
 
 **使用场景**
 
@@ -49,7 +49,7 @@
 
    * 请先运行如下命令生成配置文件和migration文件
 ```php
-   php artisan vendor:publish
+   php artisan vendor:publish "ULan\Sms\ServiceProvider\SmsManagerServiceProvider"
 ```
 
    * 在数据库中生成sms表
@@ -66,7 +66,7 @@
 
    * 配置代理服务商的相关参数
 
-   在config/laravel-sms.php中，找到你想要使用的代理器，并填写好配置信息。
+   在config/sms.php中，找到你想要使用的代理器，并填写好配置信息。
 
 >  如果你使用的是Luosimao，请在数组'Luosimao'中按照提示填写配置信息
 >  ```php
@@ -83,13 +83,13 @@
   在控制器中发送触发短信，如：
 ```php
   //只希望使用模板方式发送短信,可以不设置内容content (如云通讯,Submail)
-  ULan\Sms\Sms::make($tempId)->to('1828****349')->data(['12345', 5])->send();
+  ULan\Sms\Models\Sms::make($tempId)->to('1828****349')->data(['12345', 5])->send();
 
   //只希望使用内容方式放送,可以不设置模板id和模板数据data (如云片,luosimao)
-  ULan\Sms\Sms::make()->to('1828****349')->content('【Laravel SMS】亲爱的张三，欢迎访问，祝你工作愉快。')->send();
+  ULan\Sms\Models\Sms::make()->to('1828****349')->content('【SMS】亲爱的张三，欢迎访问，祝你工作愉快。')->send();
 
   //同时确保能通过模板和内容方式发送。这样做的好处是，可以兼顾到各种代理器(服务商)！
-  ULan\Sms\Sms::make([
+  ULan\Sms\Models\Sms::make([
       'YunTongXun' => '123',
       'SubMail'    => '123'
   ])
@@ -112,7 +112,7 @@
 如果你只使用了默认代理器，即没有开启备用代理器机制。你只需要设置默认代理器的模板ID:
 ```php
    //静态方法设置，并返回sms实例
-   $sms = ULan\Sms\Sms::make('20001');
+   $sms = ULan\Sms\Models\Sms::make('20001');
    //或
    $sms = $sms->template('20001');
 ```
@@ -120,7 +120,7 @@
 如果你要开启备用代理器机制，那么需要为只支持模板短信默认/备用代理器设置相应模板ID，这样才能保证这些代理器正常使用。可以这样设置:
 ```php
    //静态方法设置，并返回sms实例
-   $sms = ULan\Sms\Sms::make(['YunTongXun' => '20001', 'SubMail' => 'xxx', ...]);
+   $sms = ULan\Sms\Models\Sms::make(['YunTongXun' => '20001', 'SubMail' => 'xxx', ...]);
    //设置指定服务商的模板id
    $sms = $sms->template('YunTongXun', '20001')->template('SubMail' => 'xxx');
    //一次性设置多个服务商的模板id
@@ -310,7 +310,7 @@
 在agents目录下添加代理器类(注意类名为FooAgent),并继承Agent抽象类。如果使用到其他api，可以将api文件放入src/lib文件夹中。
 
 ```php
-   namespace ULan\Sms;
+   namespace ULan\Sms\Agents;
    class FooAgent extends Agent {
         //override
         //发送短信一级入口

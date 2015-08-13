@@ -1,6 +1,6 @@
 <?php
 
-namespace ULan\Sms;
+namespace ULan\Sms\Agents;
 
 class LuosimaoAgent extends Agent
 {
